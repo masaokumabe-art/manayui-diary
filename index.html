@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>まなゆい・ダイアリー | Manayui Diary</title>
+  <style>
+    :root {
+      --purple-deep:   #5C3D8F;
+      --purple-mid:    #8B63C4;
+      --purple-light:  #C8A8F0;
+      --purple-pale:   #EDE0FF;
+      --pink-soft:     #FFE4F3;
+      --pink-mid:      #F0A8CF;
+      --gold:          #C9962A;
+      --gold-light:    #F5DFA0;
+      --bg-gradient:   linear-gradient(135deg, #F0E8FF 0%, #FFE8F5 100%);
+      --card-bg:       rgba(255,255,255,0.82);
+      --card-border:   rgba(200,168,240,0.4);
+      --text-dark:     #2D1F4E;
+      --text-mid:      #6B4FA0;
+      --text-light:    #A080C8;
+      --shadow:        0 8px 32px rgba(92,61,143,0.13);
+      --shadow-hover:  0 14px 40px rgba(92,61,143,0.22);
+      --radius:        18px;
+      --radius-sm:     10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      text-align: center;
+      padding: 40px 20px 24px;
+      position: relative;
+    }
+    .header-glow {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 200px;
+      background: radial-gradient(ellipse, rgba(139,99,196,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--purple-deep), var(--pink-mid));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    header .subtitle {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      letter-spacing: 0.04em;
+    }
+    .lotus {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 8px;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    /* ===== NAV TABS ===== */
+    .nav-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 0 16px 24px;
+      gap: 0;
+    }
+    .nav-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      padding: 5px;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+    .tab-btn:hover { background: var(--purple-pale); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid));
+      color: white;
+      box-shadow: 0 4px 14px rgba(92,61,143,0.35);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 16px 80px;
+    }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      transition: box-shadow 0.3s;
+    }
+    .card:hover { box-shadow: var(--shadow-hover); }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--purple-deep);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title .icon { font-size: 1.2rem; }
+
+    /* ===== INPUTS ===== */
+    textarea, input[type="text"] {
+      width: 100%;
+      border: 1.5px solid var(--purple-light);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      background: rgba(255,255,255,0.9);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea:focus, input[type="text"]:focus {
+      border-color: var(--purple-mid);
+      box-shadow: 0 0 0 3px rgba(139,99,196,0.15);
+    }
+    textarea { min-height: 100px; line-height: 1.7; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 22px;
+      border-radius: 50px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.03em;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid));
+      color: white;
+      box-shadow: 0 4px 14px rgba(92,61,143,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(92,61,143,0.4); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      background: white;
+      color: var(--purple-deep);
+      border: 1.5px solid var(--purple-light);
+    }
+    .btn-secondary:hover { background: var(--purple-pale); border-color: var(--purple-mid); }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #E8B84B);
+      color: white;
+      box-shadow: 0 4px 14px rgba(201,150,42,0.35);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,150,42,0.4); }
+    .btn-sm { padding: 7px 14px; font-size: 0.80rem; }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+
+    /* ===== MAGIC PHRASE OUTPUT ===== */
+    .magic-output {
+      background: linear-gradient(135deg, var(--purple-pale), var(--pink-soft));
+      border: 1.5px solid var(--purple-light);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      margin: 16px 0;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .magic-output::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(200,168,240,0.3), transparent);
+    }
+    .magic-output.visible { display: block; animation: fadeSlide 0.5s ease; }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .magic-text {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--purple-deep);
+      font-weight: 500;
+      position: relative;
+    }
+    .magic-phrase-highlight {
+      color: var(--purple-mid);
+      font-weight: 700;
+    }
+    .speaking-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--purple-mid);
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .speaking-indicator.active { opacity: 1; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple-mid); animation: pulse 1s ease-in-out infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse { 0%,100%{transform:scale(0.8);opacity:0.5} 50%{transform:scale(1.2);opacity:1} }
+
+    /* ===== HINT TEXT ===== */
+    .hint {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* ===== MANA QUOTE ===== */
+    .mana-quote {
+      border-left: 3px solid var(--purple-mid);
+      padding: 12px 16px;
+      background: var(--purple-pale);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--purple-deep);
+      margin: 14px 0;
+      font-style: italic;
+    }
+
+    /* ===== JUDGE SECTION ===== */
+    .two-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .voice-box {
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .voice-box.ego {
+      background: rgba(255,180,180,0.2);
+      border: 1px solid rgba(255,120,120,0.3);
+    }
+    .voice-box.true-self {
+      background: rgba(168,240,200,0.2);
+      border: 1px solid rgba(80,200,120,0.3);
+    }
+    .voice-box-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+    .voice-box.ego .voice-box-label     { color: #C05050; }
+    .voice-box.true-self .voice-box-label { color: #2E8B57; }
+    .voice-box textarea { min-height: 80px; font-size: 0.88rem; }
+
+    /* ===== BLESSING SECTION ===== */
+    .blessing-setup { margin-bottom: 20px; }
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .day-circle {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 2px solid var(--purple-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.25s;
+      background: white;
+      position: relative;
+    }
+    .day-circle .day-num { font-size: 1rem; }
+    .day-circle.completed {
+      background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid));
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 12px rgba(92,61,143,0.3);
+    }
+    .day-circle.active-day {
+      border-color: var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,150,42,0.2);
+    }
+    .day-circle.completed.active-day {
+      border-color: transparent;
+      color: white;
+    }
+    .blessing-phrase-box {
+      background: linear-gradient(135deg, #FFF8E8, var(--gold-light));
+      border: 1.5px solid var(--gold-light);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center;
+      display: none;
+    }
+    .blessing-phrase-box.visible { display: block; animation: fadeSlide 0.4s ease; }
+    .blessing-day-label {
+      font-size: 0.78rem;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .blessing-phrase-text {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: #7A5A00;
+      font-weight: 500;
+    }
+    .blessing-name-highlight { color: var(--gold); font-weight: 800; }
+    .progress-bar-wrap {
+      background: var(--purple-pale);
+      border-radius: 50px;
+      height: 8px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple-deep), var(--purple-mid));
+      border-radius: 50px;
+      transition: width 0.5s ease;
+    }
+    .progress-label {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      text-align: right;
+    }
+
+    /* ===== DIARY ===== */
+    .diary-filter {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: white;
+      border: 1.5px solid var(--purple-light);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--purple-pale);
+      border-color: var(--purple-mid);
+      color: var(--purple-deep);
+    }
+    .diary-empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    .diary-entry {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(8px);
+      position: relative;
+      animation: fadeSlide 0.3s ease;
+    }
+    .diary-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .entry-type-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 50px;
+      letter-spacing: 0.04em;
+    }
+    .badge-acceptance { background: var(--purple-pale); color: var(--purple-deep); }
+    .badge-judge      { background: rgba(168,240,200,0.4); color: #2E6B40; }
+    .badge-blessing   { background: var(--gold-light); color: #7A5A00; }
+    .entry-date { font-size: 0.75rem; color: var(--text-light); }
+    .entry-body { font-size: 0.88rem; line-height: 1.7; color: var(--text-dark); }
+    .entry-body .phrase { color: var(--purple-mid); font-weight: 600; }
+    .entry-delete {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+      margin-left: 10px;
+    }
+    .entry-delete:hover { opacity: 1; }
+
+    /* ===== TIPS BOX ===== */
+    .tips-accordion {
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-top: 14px;
+    }
+    .tips-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 16px;
+      background: var(--purple-pale);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--purple-deep);
+      user-select: none;
+    }
+    .tips-body {
+      display: none;
+      padding: 16px;
+      background: white;
+      font-size: 0.83rem;
+      line-height: 1.8;
+      color: var(--text-dark);
+    }
+    .tips-body.open { display: block; }
+    .tips-body p { margin-bottom: 10px; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: linear-gradient(135deg, var(--purple-deep), var(--purple-mid));
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(92,61,143,0.4);
+      z-index: 9999;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===== VOICE BAR ===== */
+    .vv-bar {
+      display: flex;
+      justify-content: center;
+      padding: 0 16px 16px;
+    }
+    .vv-bar-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      padding: 7px 16px;
+      backdrop-filter: blur(8px);
+      flex-wrap: wrap;
+    }
+    .vv-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      white-space: nowrap;
+    }
+    .vv-select {
+      border: 1.5px solid var(--purple-light);
+      border-radius: 50px;
+      padding: 5px 12px;
+      font-family: inherit;
+      font-size: 0.80rem;
+      color: var(--text-dark);
+      background: white;
+      outline: none;
+      max-width: 260px;
+    }
+    .vv-select:focus { border-color: var(--purple-mid); }
+    .vv-range {
+      -webkit-appearance: none;
+      width: 80px; height: 4px;
+      border-radius: 4px;
+      background: var(--purple-light);
+      outline: none;
+    }
+    .vv-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--purple-mid);
+      cursor: pointer;
+    }
+
+    /* ===== SETTINGS MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px;
+      width: min(420px, 90vw);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--purple-deep);
+      margin-bottom: 16px;
+    }
+    .modal-hint {
+      font-size: 0.80rem;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .api-key-input {
+      width: 100%;
+      border: 1.5px solid var(--purple-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      color: var(--text-dark);
+      background: white;
+      outline: none;
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+    }
+    .api-key-input:focus { border-color: var(--purple-mid); }
+    .settings-fab {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      border: 1.5px solid var(--card-border);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      transition: box-shadow 0.2s;
+    }
+    .settings-fab:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+    .ai-generating {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-light), transparent);
+      margin: 18px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-glow"></div>
+    <span class="lotus">🪷</span>
+    <h1>まなゆい・ダイアリー</h1>
+    <p class="subtitle">どんな感情も、受け入れ、認め、許し、愛する</p>
+  </header>
+
+  <!-- NAV TABS -->
+  <div class="nav-wrap">
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="acceptance">✨ 全受容ワーク</button>
+      <button class="tab-btn" data-tab="judge">🌿 ジャッジ手放し</button>
+      <button class="tab-btn" data-tab="blessing">🌟 7日間の祝福</button>
+      <button class="tab-btn" data-tab="diary">📖 ダイアリー</button>
+    </nav>
+  </div>
+
+  <!-- VOICE SETTINGS BAR -->
+  <div class="vv-bar" id="vvBar">
+    <div class="vv-bar-inner">
+      <span class="vv-label">🔊 音声</span>
+      <select id="vvSpeaker" class="vv-select">
+        <option value="">── 読み込み中 ──</option>
+      </select>
+      <span class="vv-label" style="margin-left:4px;">速さ</span>
+      <input type="range" id="vvRate" class="vv-range" min="0.5" max="1.5" step="0.1" value="0.9">
+      <span id="vvRateLabel" class="vv-label">0.9</span>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-box">
+      <div class="modal-title">⚙️ 設定</div>
+      <div class="modal-hint">
+        Claude APIキーを入力してください。<br>
+        真我の声のAI生成機能に使用します。<br>
+        キーはこのデバイスのみに保存され、外部には送信されません。
+      </div>
+      <input type="password" id="apiKeyInput" class="api-key-input" placeholder="sk-ant-api03-...">
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-secondary btn-sm" id="closeSettingsBtn">キャンセル</button>
+        <button class="btn btn-primary btn-sm" id="saveApiKeyBtn">保存して閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS FAB -->
+  <button class="settings-fab" id="settingsFab" title="設定">⚙️</button>
+
+  <main>
+
+    <!-- ===== SECTION 1: FULL ACCEPTANCE ===== -->
+    <section class="section active" id="acceptance">
+      <div class="card">
+        <div class="card-title"><span class="icon">💜</span>感情の全受容ワーク</div>
+        <div class="mana-quote">
+          「感情はあなたの敵ではありません。<br>
+          あなたの奥深くにある魂が、愛を求めているサインです。」
+        </div>
+
+        <label class="label">今、どんな本音がありますか？</label>
+        <div class="hint">批判せず、ありのままに書いてください。どんな言葉でも大丈夫です。</div>
+        <textarea id="feelingInput" placeholder="例）上司がムカつく&#10;例）片付けられない自分が情けない&#10;例）またやってしまった、最低だ"></textarea>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="generateBtn">✨ 魔法のフレーズを生成</button>
+          <button class="btn btn-secondary btn-sm" id="clearInputBtn">クリア</button>
+        </div>
+      </div>
+
+      <!-- Magic Output -->
+      <div class="magic-output" id="magicOutput">
+        <div class="magic-text" id="magicText"></div>
+        <div class="speaking-indicator" id="speakingIndicator">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span style="margin-left:4px;">読み上げ中...</span>
+        </div>
+        <div class="divider"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary btn-sm" id="speakBtn">🔊 音読する</button>
+          <button class="btn btn-gold btn-sm" id="saveAcceptBtn">📖 記録する</button>
+          <button class="btn btn-secondary btn-sm" id="stopSpeakBtn">⏹ 停止</button>
+        </div>
+      </div>
+
+      <!-- Tips Accordion -->
+      <div class="tips-accordion">
+        <div class="tips-header" id="tipsToggle">
+          💡 ワークの使い方・ポイント <span id="tipsArrow">▼</span>
+        </div>
+        <div class="tips-body" id="tipsBody">
+          <p><strong>① 正直に書く</strong><br>「こんなこと書いていいのかな」という検閲をやめましょう。醜い言葉ほど、大きな浄化につながります。</p>
+          <p><strong>② フレーズを繰り返す</strong><br>生成されたフレーズを、目を閉じて3回声に出してみましょう。初めは照れくさくて当然です。</p>
+          <p><strong>③ 感情を観察する</strong><br>フレーズを言った後、胸や体の感覚に注目してください。じんわりとした温かさや、涙が出ることがあります——それが浄化のサインです。</p>
+          <p><strong>④ 毎日続ける</strong><br>継続することで「真我（しんが）」の視点が育ち、自己批判の声が少しずつ静かになっていきます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2: JUDGE RELEASE ===== -->
+    <section class="section" id="judge">
+      <div class="card">
+        <div class="card-title"><span class="icon">🌿</span>ジャッジ（裁き）を手放すワーク</div>
+        <div class="mana-quote">
+          「生我（エゴ）は裁きます。真我（しんが）は愛します。<br>
+          どちらの自分として、今日を生きますか？」
+        </div>
+
+        <div class="hint" style="margin-bottom:14px;">
+          今あなたを困らせている出来事や、自分や他者への批判を書いてみましょう。<br>
+          そして、真我（高い視点の自分）の目線で言い換えてみます。
+        </div>
+
+        <label class="label">📌 今日の状況・出来事</label>
+        <textarea id="situationInput" placeholder="例）同僚が私の功績を横取りして、腸が煮えくりかえっています" style="min-height:70px;"></textarea>
+
+        <div class="two-col" style="margin-top:16px;">
+          <div class="voice-box ego">
+            <div class="voice-box-label">🔴 生我（エゴ）の声</div>
+            <textarea id="egoInput" placeholder="批判・怒り・怖れをそのまま書く&#10;例）絶対に許せない。あいつは最低だ"></textarea>
+          </div>
+          <div class="voice-box true-self">
+            <div class="voice-box-label" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>🟢 真我（しんが）の声</span>
+              <button class="btn btn-primary btn-sm" id="aiGenerateBtn" style="padding:4px 10px;font-size:0.72rem;">🌿 真我の声を聞く</button>
+            </div>
+            <textarea id="trueSelfInput" placeholder="高い視点から眺めると？&#10;例）彼も何か不安を抱えているのかもしれない"></textarea>
+          </div>
+        </div>
+
+        <div class="tips-accordion" style="margin-top:4px;">
+          <div class="tips-header" id="guideTipsToggle">✨ 真我の声に気づくヒント <span id="guideTipsArrow">▼</span></div>
+          <div class="tips-body" id="guideTipsBody">
+            <p>• <strong>エゴ</strong>は分離・恐れ・攻撃を選びます。「自分は被害者だ」「あいつが悪い」と感じます。</p>
+            <p>• <strong>真我</strong>は繋がり・愛・赦しを知っています。「この出来事は私に何を教えているか？」と問います。</p>
+            <p>• 真我の視点を見つけるためのヒント：<br>「10年後の自分から見たら、この出来事はどう見える？」<br>「愛する友人が同じ状況だったら、何と声をかける？」<br>「この状況は、私の魂の成長のためにどんな意味があるか？」</p>
+          </div>
+        </div>
+
+        <div class="btn-group" style="margin-top:16px;">
+          <button class="btn btn-primary" id="saveJudgeBtn">🌿 このワークを記録する</button>
+          <button class="btn btn-secondary btn-sm" id="clearJudgeBtn">クリア</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🪞</span>今日の真我の気づき</div>
+        <div class="hint">気づいたこと、感じたことを自由に。</div>
+        <textarea id="insightInput" placeholder="例）怒りの裏に「認められたい」という気持ちがあることに気づきました" style="min-height:80px;"></textarea>
+        <div class="btn-group">
+          <button class="btn btn-gold btn-sm" id="saveInsightBtn">✨ 気づきを保存</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3: 7-DAY BLESSING ===== -->
+    <section class="section" id="blessing">
+      <div class="card">
+        <div class="card-title"><span class="icon">🌟</span>7日間の祝福（ブレス）ワーク</div>
+        <div class="mana-quote">
+          「祝福は、あなたの中から恐怖を追い出し、<br>
+          その場所に愛と光を満たします。<br>
+          相手を変えようとするのではなく、自分の中の世界を変えましょう。」
+        </div>
+
+        <div class="blessing-setup">
+          <label class="label">🌸 祝福を送る相手のお名前（ニックネームでOK）</label>
+          <div style="display:flex;gap:10px;">
+            <input type="text" id="blessingTarget" placeholder="例）田中部長、元カレ、お義母さん" style="flex:1;">
+            <button class="btn btn-primary btn-sm" id="startBlessingBtn">開始</button>
+          </div>
+        </div>
+
+        <div id="blessingTracker" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-size:0.85rem;font-weight:700;color:var(--purple-deep);">
+              <span id="blessingTargetDisplay"></span>さんへの祝福
+            </div>
+            <button class="btn btn-secondary btn-sm" id="resetBlessingBtn">リセット</button>
+          </div>
+
+          <div class="days-grid" id="daysGrid"></div>
+
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="blessingProgress"></div>
+          </div>
+          <div class="progress-label"><span id="completedDays">0</span> / 7日 完了</div>
+
+          <div class="blessing-phrase-box" id="blessingPhraseBox">
+            <div class="blessing-day-label" id="blessingDayLabel"></div>
+            <div class="blessing-phrase-text" id="blessingPhraseText"></div>
+            <div class="btn-group" style="justify-content:center;margin-top:14px;">
+              <button class="btn btn-gold btn-sm" id="speakBlessingBtn">🔊 声に出して読む</button>
+              <button class="btn btn-primary btn-sm" id="completeDayBtn">✅ 今日の祝福を完了</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="blessingTipsCard">
+        <div class="card-title"><span class="icon">💫</span>祝福ワークの効果</div>
+        <div class="hints" style="font-size:0.85rem;line-height:1.8;color:var(--text-dark);">
+          <p style="margin-bottom:10px;">
+            <strong>なぜ「嫌いな相手」を祝福するのか？</strong><br>
+            「相手を許す」ということは相手のためではなく、あなた自身を恐れと怒りの鎖から解放するためです。
+          </p>
+          <p style="margin-bottom:10px;">
+            <strong>7日間続けることで起きる変化</strong><br>
+            ・相手のことを考えるたびに湧く怒りが少しずつ静まります<br>
+            ・あなたのエネルギーが「反応」から「創造」へと変わります<br>
+            ・不思議と、相手や状況が変わり始めることもあります
+          </p>
+          <p>
+            <strong>上手くいかない日も大丈夫</strong><br>
+            怒りや抵抗を感じながらフレーズを言うだけでも十分です。フリでも続けることが大切です。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4: DIARY ===== -->
+    <section class="section" id="diary">
+      <div class="card" style="padding:20px 28px;">
+        <div class="card-title"><span class="icon">📖</span>ダイアリー</div>
+        <div class="diary-filter">
+          <button class="filter-btn active" data-filter="all">すべて</button>
+          <button class="filter-btn" data-filter="acceptance">全受容</button>
+          <button class="filter-btn" data-filter="judge">ジャッジ手放し</button>
+          <button class="filter-btn" data-filter="blessing">祝福</button>
+        </div>
+      </div>
+      <div id="diaryList"></div>
+    </section>
+
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== STATE =====
+    const STATE = {
+      entries: JSON.parse(localStorage.getItem('manayui_entries') || '[]'),
+      blessing: JSON.parse(localStorage.getItem('manayui_blessing') || 'null'),
+    };
+    function saveState() {
+      localStorage.setItem('manayui_entries', JSON.stringify(STATE.entries));
+      localStorage.setItem('manayui_blessing', JSON.stringify(STATE.blessing));
+    }
+
+    // ===== TOAST =====
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // ===== TAB NAVIGATION =====
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'diary') renderDiary('all');
+        // 感情の全受容ワークの内容をジャッジ手放しタブに自動連携
+        if (btn.dataset.tab === 'judge') syncAcceptanceToJudge();
+      });
+    });
+
+    function syncAcceptanceToJudge() {
+      const feeling = document.getElementById('feelingInput').value.trim();
+      if (!feeling) return;
+      if (!document.getElementById('situationInput').value) {
+        document.getElementById('situationInput').value = feeling;
+      }
+      if (!document.getElementById('egoInput').value) {
+        document.getElementById('egoInput').value = feeling;
+      }
+    }
+
+    // ===== ACCORDION =====
+    function setupAccordion(toggleId, bodyId, arrowId) {
+      document.getElementById(toggleId).addEventListener('click', () => {
+        const body  = document.getElementById(bodyId);
+        const arrow = document.getElementById(arrowId);
+        const open  = body.classList.toggle('open');
+        arrow.textContent = open ? '▲' : '▼';
+      });
+    }
+    setupAccordion('tipsToggle', 'tipsBody', 'tipsArrow');
+    setupAccordion('guideTipsToggle', 'guideTipsBody', 'guideTipsArrow');
+
+    // ===== WEB SPEECH API TTS =====
+    const synth = window.speechSynthesis;
+    let currentUtter = null;
+
+    function loadVoices() {
+      const sel = document.getElementById('vvSpeaker');
+      const voices = synth.getVoices();
+      const jaVoices = voices.filter(v => v.lang.startsWith('ja'));
+      if (!jaVoices.length) return;
+      const prev = sel.value;
+      sel.innerHTML = '';
+      jaVoices.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.name;
+        opt.textContent = v.name.replace('Microsoft ', '').replace(' - Japanese (Japan)', '');
+        sel.appendChild(opt);
+      });
+      // 優先順位: Keita(男性)→Nanami→その他
+      const preferred = ['Microsoft Keita', 'Keita', 'Microsoft Nanami', 'Nanami'];
+      let defaultVoice = jaVoices.find(v => preferred.some(p => v.name.includes(p)));
+      if (!defaultVoice) defaultVoice = jaVoices[0];
+      sel.value = prev || defaultVoice.name;
+    }
+
+    // ブラウザによって非同期で voices が読み込まれる
+    loadVoices();
+    if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+
+    // 速さスライダー
+    const rateSlider = document.getElementById('vvRate');
+    const rateLabel  = document.getElementById('vvRateLabel');
+    rateSlider.addEventListener('input', () => { rateLabel.textContent = rateSlider.value; });
+
+    function speak(text, onEnd) {
+      const done = () => { if (onEnd) onEnd(); };
+      stopSpeak();
+      if (!synth) { showToast('このブラウザは音声合成に対応していません'); done(); return; }
+      const voiceName = document.getElementById('vvSpeaker').value;
+      const voice = synth.getVoices().find(v => v.name === voiceName) || null;
+      currentUtter = new SpeechSynthesisUtterance(text);
+      currentUtter.lang  = 'ja-JP';
+      currentUtter.rate  = parseFloat(rateSlider.value);
+      currentUtter.pitch = 1.0;
+      if (voice) currentUtter.voice = voice;
+      currentUtter.onend   = done;
+      currentUtter.onerror = done;
+      synth.speak(currentUtter);
+    }
+
+    function stopSpeak() {
+      if (synth) synth.cancel();
+      currentUtter = null;
+    }
+
+    // ===== SECTION 1: FULL ACCEPTANCE =====
+    const MAGIC_SUFFIX = '……と思った自分を、受け入れ、認め、許し、愛しています。';
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const feeling = document.getElementById('feelingInput').value.trim();
+      if (!feeling) { showToast('気持ちを入力してください'); return; }
+      const full = feeling + MAGIC_SUFFIX;
+      const box  = document.getElementById('magicOutput');
+      const textEl = document.getElementById('magicText');
+      textEl.innerHTML = `<span>${escapeHTML(feeling)}</span><span class="magic-phrase-highlight">${escapeHTML(MAGIC_SUFFIX)}</span>`;
+      box.classList.add('visible');
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    document.getElementById('speakBtn').addEventListener('click', () => {
+      const feeling = document.getElementById('feelingInput').value.trim();
+      if (!feeling) return;
+      const full = feeling + MAGIC_SUFFIX;
+      const indicator = document.getElementById('speakingIndicator');
+      indicator.classList.add('active');
+      speak(full, () => indicator.classList.remove('active'));
+    });
+
+    document.getElementById('stopSpeakBtn').addEventListener('click', () => {
+      stopSpeak();
+      document.getElementById('speakingIndicator').classList.remove('active');
+    });
+
+    document.getElementById('saveAcceptBtn').addEventListener('click', () => {
+      const feeling = document.getElementById('feelingInput').value.trim();
+      if (!feeling) return;
+      const entry = {
+        id: Date.now(),
+        type: 'acceptance',
+        date: new Date().toISOString(),
+        feeling,
+        full: feeling + MAGIC_SUFFIX,
+      };
+      STATE.entries.unshift(entry);
+      saveState();
+      showToast('💜 記録しました');
+    });
+
+    document.getElementById('clearInputBtn').addEventListener('click', () => {
+      document.getElementById('feelingInput').value = '';
+      document.getElementById('magicOutput').classList.remove('visible');
+      stopSpeak();
+    });
+
+    // ===== SETTINGS MODAL =====
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const settingsModal = document.getElementById('settingsModal');
+    document.getElementById('settingsFab').addEventListener('click', () => {
+      apiKeyInput.value = localStorage.getItem('manayui_apikey') || '';
+      settingsModal.classList.add('open');
+    });
+    document.getElementById('closeSettingsBtn').addEventListener('click', () => {
+      settingsModal.classList.remove('open');
+    });
+    settingsModal.addEventListener('click', e => {
+      if (e.target === settingsModal) settingsModal.classList.remove('open');
+    });
+    document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
+      localStorage.setItem('manayui_apikey', apiKeyInput.value.trim());
+      settingsModal.classList.remove('open');
+      showToast('🔑 APIキーを保存しました');
+    });
+
+    async function generateTrueSelf() {
+      const apiKey = (localStorage.getItem('manayui_apikey') || apiKeyInput.value).trim();
+      if (!apiKey) { showToast('🔑 APIキーを入力して保存してください'); return; }
+      const ego       = document.getElementById('egoInput').value.trim();
+      const situation = document.getElementById('situationInput').value.trim();
+      if (!ego) { showToast('先に「生我の声」を入力してください'); return; }
+
+      const btn = document.getElementById('aiGenerateBtn');
+      btn.textContent = '⏳ 生成中...';
+      btn.classList.add('ai-generating');
+
+      const userContent = situation
+        ? `【状況】${situation}\n【エゴの声】${ego}`
+        : `【エゴの声】${ego}`;
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5',
+            max_tokens: 300,
+            system: `あなたは「まなゆい・ダイアリー」の真我（しんが）の声です。
+ユーザーのエゴの声を読み、「えっ、そんな見方があるの？」と思わず膝を打つような、鋭く意外な視点を1〜2文で届けてください。
+
+【必ずこのどれかの角度で切り込む】
+・その怒りや不満が、実はユーザー自身の"まだ満たされていない欲求"を映している鏡である
+・相手の行動の裏にある、誰も気づいていない"恐れや痛み"を具体的に言語化する
+・この状況が、ユーザーの魂が「次のステージ」に進むために設計したシナリオである
+・ユーザーが「問題」だと思っているものが、実は自分の強みや才能の裏返しである
+
+【構成】
+① 「えっそんな見方が？」と思わせる鋭い一文（上記の角度で）
+② その気づきを受け止めたあなたへの、短い寄り添いの一言（責めず、押しつけず、ただ隣にいるような温かさで）
+
+【禁止事項】
+・「きっと～かもしれません」「相手も辛いのでしょう」などのありきたりな共感フレーズ
+・「愛と光を」「魂の成長」などの説明的なスピリチュアル用語
+・②で説教や提案をしない。ただ寄り添うだけ。
+
+出力は真我の言葉のみ。前置き・説明・タグ一切不要。`,
+            messages: [{ role: 'user', content: userContent }],
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        const text = data.content?.find(b => b.type === 'text')?.text || '';
+        document.getElementById('trueSelfInput').value = text.trim();
+        showToast('✨ 真我の声を生成しました');
+      } catch (e) {
+        showToast(`⚠️ 生成失敗: ${e.message}`);
+      } finally {
+        btn.textContent = '🌿 真我の声を聞く';
+        btn.classList.remove('ai-generating');
+      }
+    }
+
+    document.getElementById('aiGenerateBtn').addEventListener('click', generateTrueSelf);
+
+    // ===== SECTION 2: JUDGE RELEASE =====
+    document.getElementById('saveJudgeBtn').addEventListener('click', () => {
+      const situation = document.getElementById('situationInput').value.trim();
+      const ego       = document.getElementById('egoInput').value.trim();
+      const trueSelf  = document.getElementById('trueSelfInput').value.trim();
+      if (!situation && !ego && !trueSelf) { showToast('何か入力してください'); return; }
+      if (!trueSelf) { showToast('「真我の声を聞く」を押してから記録してください'); return; }
+      const entry = {
+        id: Date.now(),
+        type: 'judge',
+        date: new Date().toISOString(),
+        situation, ego, trueSelf,
+      };
+      STATE.entries.unshift(entry);
+      saveState();
+      showToast('🌿 ワークを記録しました');
+    });
+
+    document.getElementById('saveInsightBtn').addEventListener('click', () => {
+      const insight = document.getElementById('insightInput').value.trim();
+      if (!insight) { showToast('気づきを入力してください'); return; }
+      const entry = {
+        id: Date.now(),
+        type: 'judge',
+        date: new Date().toISOString(),
+        insight,
+      };
+      STATE.entries.unshift(entry);
+      saveState();
+      showToast('✨ 気づきを保存しました');
+      document.getElementById('insightInput').value = '';
+    });
+
+    document.getElementById('clearJudgeBtn').addEventListener('click', () => {
+      ['situationInput','egoInput','trueSelfInput','insightInput'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    });
+
+    // ===== SECTION 3: BLESSING =====
+    const BLESSING_PHRASES = [
+      '{name}さん、あなたに愛と光を送ります。',
+      '{name}さん、あなたが幸せでありますように。',
+      '{name}さん、あなたの魂に祝福を送ります。',
+      '{name}さん、私たちは本来ひとつです。あなたを愛しています。',
+      '{name}さん、あなたへの恐怖と怒りを、今手放します。',
+      '{name}さん、あなたもまた、神の愛に包まれた存在です。',
+      '{name}さん、ありがとう。あなたは私の魂の鏡です。あなたを愛しています。',
+    ];
+    const DAY_THEMES = ['愛と光', '幸福の祈り', '魂への祝福', '一体性', '手放し', '神聖な存在', '感謝と愛'];
+
+    function initBlessingUI() {
+      const b = STATE.blessing;
+      if (!b) return;
+      document.getElementById('blessingTracker').style.display = 'block';
+      document.getElementById('blessingTargetDisplay').textContent = b.target;
+      renderDaysGrid();
+      updateBlessingProgress();
+      showTodayBlessingPhrase();
+    }
+
+    function renderDaysGrid() {
+      const grid = document.getElementById('daysGrid');
+      const b    = STATE.blessing;
+      const today = getTodayDayIndex();
+      grid.innerHTML = '';
+      for (let i = 0; i < 7; i++) {
+        const el = document.createElement('div');
+        el.className = 'day-circle';
+        const done = b.completed[i];
+        if (done) el.classList.add('completed');
+        if (i === today && !done) el.classList.add('active-day');
+        el.innerHTML = `<div class="day-num">${i+1}</div><div style="font-size:0.6rem">${done?'✓':'日'}</div>`;
+        el.addEventListener('click', () => selectDay(i));
+        grid.appendChild(el);
+      }
+    }
+
+    function getTodayDayIndex() {
+      if (!STATE.blessing) return 0;
+      const start = new Date(STATE.blessing.startDate);
+      const now   = new Date();
+      const diff  = Math.floor((now - start) / 86400000);
+      return Math.min(diff, 6);
+    }
+
+    let selectedDay = null;
+    function selectDay(i) {
+      selectedDay = i;
+      showBlessingPhrase(i);
+    }
+
+    function showTodayBlessingPhrase() {
+      const today = getTodayDayIndex();
+      selectedDay = today;
+      showBlessingPhrase(today);
+    }
+
+    function showBlessingPhrase(day) {
+      const b = STATE.blessing;
+      const box = document.getElementById('blessingPhraseBox');
+      const label = document.getElementById('blessingDayLabel');
+      const text  = document.getElementById('blessingPhraseText');
+      const raw   = BLESSING_PHRASES[day].replace('{name}', b.target);
+      label.textContent = `Day ${day+1} — ${DAY_THEMES[day]}`;
+      text.innerHTML = raw.replace(b.target, `<span class="blessing-name-highlight">${escapeHTML(b.target)}</span>`);
+      box.classList.add('visible');
+    }
+
+    function updateBlessingProgress() {
+      const b = STATE.blessing;
+      const done = b.completed.filter(Boolean).length;
+      document.getElementById('blessingProgress').style.width = (done / 7 * 100) + '%';
+      document.getElementById('completedDays').textContent = done;
+    }
+
+    document.getElementById('startBlessingBtn').addEventListener('click', () => {
+      const name = document.getElementById('blessingTarget').value.trim();
+      if (!name) { showToast('お名前を入力してください'); return; }
+      STATE.blessing = {
+        target: name,
+        startDate: new Date().toISOString(),
+        completed: Array(7).fill(false),
+      };
+      saveState();
+      initBlessingUI();
+    });
+
+    document.getElementById('resetBlessingBtn').addEventListener('click', () => {
+      if (!confirm('祝福ワークをリセットしますか？')) return;
+      STATE.blessing = null;
+      saveState();
+      document.getElementById('blessingTracker').style.display = 'none';
+      document.getElementById('blessingTarget').value = '';
+      document.getElementById('blessingPhraseBox').classList.remove('visible');
+    });
+
+    document.getElementById('speakBlessingBtn').addEventListener('click', () => {
+      if (selectedDay === null) return;
+      const raw = BLESSING_PHRASES[selectedDay].replace('{name}', STATE.blessing.target);
+      speak(raw);
+    });
+
+    document.getElementById('completeDayBtn').addEventListener('click', () => {
+      if (selectedDay === null) return;
+      STATE.blessing.completed[selectedDay] = true;
+      const entry = {
+        id: Date.now(),
+        type: 'blessing',
+        date: new Date().toISOString(),
+        day: selectedDay + 1,
+        target: STATE.blessing.target,
+        phrase: BLESSING_PHRASES[selectedDay].replace('{name}', STATE.blessing.target),
+      };
+      STATE.entries.unshift(entry);
+      saveState();
+      renderDaysGrid();
+      updateBlessingProgress();
+      const done = STATE.blessing.completed.filter(Boolean).length;
+      if (done === 7) {
+        showToast('🎉 7日間の祝福が完了しました！おめでとうございます✨');
+      } else {
+        showToast(`🌟 Day ${selectedDay+1} の祝福を完了しました`);
+      }
+    });
+
+    // ===== SECTION 4: DIARY =====
+    let currentFilter = 'all';
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderDiary(currentFilter);
+      });
+    });
+
+    function renderDiary(filter) {
+      const list = document.getElementById('diaryList');
+      let entries = STATE.entries;
+      if (filter !== 'all') entries = entries.filter(e => e.type === filter);
+      if (!entries.length) {
+        list.innerHTML = '<div class="diary-empty">🌸 まだ記録がありません<br>ワークをはじめると、ここに記録が残ります。</div>';
+        return;
+      }
+      list.innerHTML = entries.map(e => renderEntry(e)).join('');
+      list.querySelectorAll('.entry-delete').forEach(btn => {
+        btn.addEventListener('click', () => deleteEntry(Number(btn.dataset.id)));
+      });
+    }
+
+    function renderEntry(e) {
+      const dateStr = new Date(e.date).toLocaleString('ja-JP', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+      let badge = '', body = '';
+      if (e.type === 'acceptance') {
+        badge = '<span class="entry-type-badge badge-acceptance">💜 全受容</span>';
+        body  = `<div class="entry-body">${escapeHTML(e.feeling)}<span class="phrase">${escapeHTML(MAGIC_SUFFIX)}</span></div>`;
+      } else if (e.type === 'judge') {
+        badge = '<span class="entry-type-badge badge-judge">🌿 ジャッジ手放し</span>';
+        if (e.insight) {
+          body = `<div class="entry-body">✨ <em>${escapeHTML(e.insight)}</em></div>`;
+        } else {
+          body = `<div class="entry-body">`;
+          if (e.situation) body += `<strong>📌 状況：</strong>${escapeHTML(e.situation)}<br>`;
+          if (e.trueSelf)  body += `<span style="color:#2E8B57;">🟢 真我の声：</span>${escapeHTML(e.trueSelf)}`;
+          body += `</div>`;
+        }
+      } else if (e.type === 'blessing') {
+        badge = '<span class="entry-type-badge badge-blessing">🌟 祝福</span>';
+        body  = `<div class="entry-body">Day ${e.day}：${escapeHTML(e.phrase)}</div>`;
+      }
+      return `
+        <div class="diary-entry">
+          <div class="diary-entry-header">
+            <div style="display:flex;align-items:center;gap:8px;">${badge}<span class="entry-date">${dateStr}</span></div>
+            <button class="entry-delete" data-id="${e.id}" title="削除">🗑</button>
+          </div>
+          ${body}
+        </div>`;
+    }
+
+    function deleteEntry(id) {
+      STATE.entries = STATE.entries.filter(e => e.id !== id);
+      saveState();
+      renderDiary(currentFilter);
+    }
+
+    function escapeHTML(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ===== INIT =====
+    initBlessingUI();
+  </script>
+</body>
+</html>
